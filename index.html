@@ -1,0 +1,64 @@
+<html>
+<body>
+    <script src="https://d3js.org/d3.v5.min.js"></script>
+    <link href="Layouts.css" rel="stylesheet" type="text/css">
+
+<h1>Basic Algorithm for D3 Layouts</h1>    
+<p> 
+    When using d3 layouts, there are several basic steps that can be used in order to create the desired svg. The first step is to define the method so that the data can be put into the proper format. This will take an array of data and convert into a format that d3 can use to create the layout desired. The next step is to define the size of the svg element and create the svg itself so that it is appended to the DOM. Then groups should be set up in order to better organize the elements and simplify the manner in which CSS can be applied to the svg. Then the actual svg elements must have the data bound to them (in the correct format) and appended into the DOM in order to actually draw rectangles, circles, lines, or paths that are desired. The final step is to decorate the elements, potentially through adding colors, text labels, or tooltips.  
+</p> 
+    
+<p> 
+    The following code was used to generate the pie chart, and is annotated with the basic d3 layout creation algorithm: 
+<p>
+    
+<pre>
+    var dataset = [10,20,30,40,50,60,70,80,90,100];
+
+    var color = d3.scaleOrdinal(d3.schemeCategory10);
+
+    //define the functions to get the right data format
+    var pie = d3.pie(); 
+
+    var width = 500;
+    var height = 500;
+
+    var outerRadius= width/2
+    var innerRadius = 50;
+
+    var arc = d3.arc()
+        .innerRadius(innerRadius)
+        .outerRadius(outerRadius);
+
+    //create the svg element
+    var svg = d3.select("body")
+        .append("svg")
+        .attr("width", width)
+        .attr("height", height);
+
+    //create groups
+    var arcs = svg.selectAll("g.arc")
+            .data(pie(dataset))
+            .enter()
+            .append("g")
+            .attr("class", "arc")
+            .attr("transform", "translate("+ outerRadius +","+outerRadius+")");
+
+    //append svg elements(path)
+    arcs.append("path")
+            .attr("fill", function(d,i) { return color(i);})
+            .attr("d",arc);
+
+    //deccorate
+    arcs.append("text")
+            .attr("transform", function(d)
+                 {return "translate("+arc.centroid(d)+")";})
+            .attr("text-anchor","middle")
+            .text(function(d){return d.value;});
+    </pre>
+    
+ <script src="Layouts.js"></script>   
+</body>
+
+
+</html>
